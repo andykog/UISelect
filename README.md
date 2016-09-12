@@ -112,6 +112,18 @@ var options = [
 ```
 Note: the `clearable` prop of the Select component should also be set to `false` to prevent allowing clearing all fields at once
 
+### Grouped options
+
+You can display labels as groups by providing `groupId` and `groupTitle`:
+
+```javascript
+var options = [
+	{ value: 'one', label: 'One', groupId: 1, groupTitle: 'First' },
+	{ value: 'two', label: 'Two', groupId: 1, groupTitle: 'First' },
+	{ value: 'three', label: 'three', groupId: 2, groupTitle: 'Second' }
+];
+```
+
 ### Async options
 
 If you want to load options asynchronously, instead of providing an `options` Array, provide a `loadOptions` Function.

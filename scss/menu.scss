@@ -36,6 +36,17 @@
 
 // options
 
+.Select-option-group-label {
+	box-sizing: border-box;
+	background-color: #fff;
+	color: #666;
+	font-size: $select-option-font-size;
+	font-weight: 700;
+	cursor: default;
+	display: block;
+	padding: 8px 10px 2px;
+}
+
 .Select-option {
 	box-sizing: border-box;
 	background-color: $select-option-bg;
@@ -43,6 +54,7 @@
 	cursor: pointer;
 	display: block;
 	padding: $select-padding-vertical $select-padding-horizontal;
+	font-size: $select-option-font-size;
 
 	&:last-child {
 		@include border-bottom-radius( $select-input-border-radius );
@@ -63,6 +75,9 @@
 		cursor: default;
 	}
 
+	&.is-inside-group {
+		padding-left: $select-padding-horizontal + 10px;
+	}
 }
 
 
