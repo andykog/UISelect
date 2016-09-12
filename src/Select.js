@@ -638,7 +638,7 @@ const Select = React.createClass({
 		} else if (this.props.multi) {
 			return [];
 		} else {
-			return null;
+			return undefined;
 		}
 	},
 
