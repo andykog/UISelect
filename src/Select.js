@@ -110,6 +110,7 @@ const Select = React.createClass({
 		valueKey: React.PropTypes.string,           // path of the label value in option objects
 		valueRenderer: React.PropTypes.func,        // valueRenderer: function (option) {}
 		wrapperStyle: React.PropTypes.object,       // optional style to apply to the component wrapper
+		theme: React.PropTypes.string,              // theme
 	},
 
 	statics: { Async, Creatable },
@@ -153,6 +154,7 @@ const Select = React.createClass({
 			tabSelectsValue: true,
 			valueComponent: Value,
 			valueKey: 'id',
+			theme: 'default'
 		};
 	},
 
@@ -1005,6 +1007,23 @@ const Select = React.createClass({
 		);
 	},
 
+	_getClassNameModifiers(c) {
+		const { multi, disabled, isLoading, searchable } = this.props;
+		const { isFocused, isPseudoFocused, isOpen  } = this.state;
+		return {
+			[c]: true,
+			[`${c}--multi]`]: this.props.multi,
+			[`${c}--single`]: !multi,
+			[`${c}--disabled`]: disabled,
+			[`${c}--focused`]: isFocused,
+			[`${c}--loading`]: isLoading,
+			[`${c}--open`]: isOpen,
+			[`${c}--pseudo-focused`]: isPseudoFocused,
+			[`${c}--searchable`]: searchable,
+			[`${c}--has-value`]: Array.isArray(this.props.currentValue) ? this.props.currentValue.length > 0 : Boolean(this.props.currentValue),
+		}
+	},
+
 	render () {
 		let valueArray = this.getValueArray(this.props.currentValue);
 		let options =	this._visibleOptions = this.filterOptions(this.props.multi ? this.getValueArray(this.props.currentValue) : null);
@@ -1019,6 +1038,7 @@ const Select = React.createClass({
 			focusedOption = this._focusedOption = undefined;
 		}
 		let className = classNames('Select', this.props.className, {
+			[`Select--theme-${this.props.theme}`]: this.props.theme,
 			'Select--multi': this.props.multi,
 			'Select--single': !this.props.multi,
 			'is-disabled': this.props.disabled,

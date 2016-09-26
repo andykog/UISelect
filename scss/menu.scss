@@ -18,6 +18,7 @@
 	box-sizing: border-box;
 	margin-top: -1px;
 	max-height: $select-menu-max-height;
+	min-width: 200px;
 	position: absolute;
 	top: 100%;
 	width: 100%;

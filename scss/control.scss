@@ -32,6 +32,18 @@
 // base
 
 .Select-control {
+	display: table;
+	width: 100%;
+	position: relative;
+	outline: none;
+	overflow: hidden;
+
+	.Select-input:focus {
+		outline: none;
+	}
+}
+
+.Select--theme-default .Select-control {
 	background-color: $select-input-bg;
 	border-color: lighten($select-input-border-color, 5%) $select-input-border-color darken($select-input-border-color, 10%);
 	border-radius: $select-input-border-radius;
@@ -42,17 +54,9 @@
 	border-spacing: 0;
 	border-collapse: separate;
 	height: $select-input-height;
-	outline: none;
-	overflow: hidden;
-	position: relative;
-	width: 100%;
 
 	&:hover {
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-	}
-
-	.Select-input:focus {
-		outline: none;
 	}
 }
 
