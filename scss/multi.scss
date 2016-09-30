@@ -31,12 +31,15 @@
 		margin-left: $select-item-gutter;
 		margin-top: $select-item-gutter;
 		vertical-align: top;
+		white-space: nowrap;
+		max-width: 130px;
+		overflow: hidden;
+		text-overflow: ellipsis;
 	}
 
 	// common
 	.Select-value-icon,
 	.Select-value-label {
-		display: inline-block;
 		vertical-align: middle;
 	}
 
@@ -45,6 +48,7 @@
 		@include border-right-radius( $select-item-border-radius );
 		cursor: default;
 		padding: $select-item-padding-vertical $select-item-padding-horizontal;
+		overflow: hidden;
 	}
 	a.Select-value-label {
 		color: $select-item-color;

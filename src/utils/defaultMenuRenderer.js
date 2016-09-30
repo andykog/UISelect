@@ -7,6 +7,7 @@ function menuRenderer ({
 	labelKey,
 	onFocus,
 	onSelect,
+	onSelectDisabled,
 	optionClassName,
 	optionComponent,
 	optionRenderer,
@@ -17,7 +18,14 @@ function menuRenderer ({
 }) {
 	let Option = optionComponent;
 
+	let currentGroupId;
+	let newGroupStart = false;
 	return options.map((option, i) => {
+		newGroupStart = option.groupId !== undefined
+			&& option.groupId !== currentGroupId
+			&& typeof option.groupTitle === 'string';
+		currentGroupId = option.groupId;
+
 		let isSelected = valueArray && valueArray.indexOf(option) > -1;
 		let isFocused = option === focusedOption;
 		let optionClass = classNames(optionClassName, {
@@ -25,9 +33,10 @@ function menuRenderer ({
 			'is-selected': isSelected,
 			'is-focused': isFocused,
 			'is-disabled': option.disabled,
+			'is-inside-group': currentGroupId !== undefined,
 		});
 
-		return (
+		const body = (
 			<Option
 				className={optionClass}
 				instancePrefix={instancePrefix}
@@ -37,6 +46,7 @@ function menuRenderer ({
 				key={`option-${i}-${option[valueKey]}`}
 				onFocus={onFocus}
 				onSelect={onSelect}
+				onSelectDisabled={onSelectDisabled}
 				option={option}
 				optionIndex={i}
 				ref={ref => { onOptionRef(ref, isFocused); }}
@@ -44,6 +54,17 @@ function menuRenderer ({
 				{optionRenderer(option, i)}
 			</Option>
 		);
+
+		if (newGroupStart) {
+			return (
+				<div>
+					<b className="Select-option-group-label">{option.groupTitle}</b>
+					{body}
+				</div>
+			)
+		} else {
+			return body;
+		}
 	});
 }
 

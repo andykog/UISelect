@@ -83,6 +83,7 @@ const Select = React.createClass({
 		onBlur: React.PropTypes.func,               // onBlur handler: function (event) {}
 		onBlurResetsInput: React.PropTypes.bool,    // whether input is cleared on blur
 		onChange: React.PropTypes.func,             // onChange handler: function (newValue) {}
+		onSelectDisabled:  React.PropTypes.func,    // fires when tried to select disabled item
 		onClose: React.PropTypes.func,              // fires when the menu is closed
 		onCloseResetsInput: React.PropTypes.bool,		// whether input is cleared when menu is closed through the arrow
 		onFocus: React.PropTypes.func,              // onFocus handler: function (event) {}
@@ -107,11 +108,12 @@ const Select = React.createClass({
 		style: React.PropTypes.object,              // optional style to apply to the control
 		tabIndex: React.PropTypes.string,           // optional tab index of the control
 		tabSelectsValue: React.PropTypes.bool,      // whether to treat tabbing out while focused to be value selection
-		value: React.PropTypes.any,                 // initial field value
+		currentValue: React.PropTypes.any,          // initial field value
 		valueComponent: React.PropTypes.func,       // value component to render
 		valueKey: React.PropTypes.string,           // path of the label value in option objects
 		valueRenderer: React.PropTypes.func,        // valueRenderer: function (option) {}
 		wrapperStyle: React.PropTypes.object,       // optional style to apply to the component wrapper
+		theme: React.PropTypes.string,              // theme
 	},
 
 	statics: { Async, AsyncCreatable, Creatable },
@@ -136,7 +138,7 @@ const Select = React.createClass({
 			inputProps: {},
 			isLoading: false,
 			joinValues: false,
-			labelKey: 'label',
+			labelKey: 'title',
 			matchPos: 'any',
 			matchProp: 'any',
 			menuBuffer: 0,
@@ -155,7 +157,8 @@ const Select = React.createClass({
 			simpleValue: false,
 			tabSelectsValue: true,
 			valueComponent: Value,
-			valueKey: 'value',
+			valueKey: 'id',
+			theme: 'default'
 		};
 	},
 
@@ -171,7 +174,7 @@ const Select = React.createClass({
 
 	componentWillMount() {
 		this._instancePrefix = 'react-select-' + (this.props.instanceId || ++instanceId) + '-';
-		const valueArray = this.getValueArray(this.props.value);
+		const valueArray = this.getValueArray(this.props.currentValue);
 
 		if (this.props.required) {
 			this.setState({
@@ -187,7 +190,7 @@ const Select = React.createClass({
 	},
 
 	componentWillReceiveProps(nextProps) {
-		const valueArray = this.getValueArray(nextProps.value, nextProps);
+		const valueArray = this.getValueArray(nextProps.currentValue, nextProps);
 
 		if (nextProps.required) {
 			this.setState({
@@ -628,19 +631,19 @@ const Select = React.createClass({
 	},
 
 	addValue (value) {
-		var valueArray = this.getValueArray(this.props.value);
+		var valueArray = this.getValueArray(this.props.currentValue);
 		this.setValue(valueArray.concat(value));
 	},
 
 	popValue () {
-		var valueArray = this.getValueArray(this.props.value);
+		var valueArray = this.getValueArray(this.props.currentValue);
 		if (!valueArray.length) return;
 		if (valueArray[valueArray.length-1].clearableValue === false) return;
 		this.setValue(valueArray.slice(0, valueArray.length - 1));
 	},
 
 	removeValue (value) {
-		var valueArray = this.getValueArray(this.props.value);
+		var valueArray = this.getValueArray(this.props.currentValue);
 		this.setValue(valueArray.filter(i => i !== value));
 		this.focus();
 	},
@@ -666,7 +669,7 @@ const Select = React.createClass({
 		} else if (this.props.multi) {
 			return [];
 		} else {
-			return null;
+			return undefined;
 		}
 	},
 
@@ -889,7 +892,7 @@ const Select = React.createClass({
 	},
 
 	renderClear () {
-		if (!this.props.clearable || (!this.props.value || this.props.value === 0) || (this.props.multi && !this.props.value.length) || this.props.disabled || this.props.isLoading) return;
+		if (!this.props.clearable || (!this.props.currentValue || this.props.currentValue === 0) || (this.props.multi && !this.props.currentValue.length) || this.props.disabled || this.props.isLoading) return;
 		return (
 			<span className="Select-clear-zone" title={this.props.multi ? this.props.clearAllText : this.props.clearValueText}
 				aria-label={this.props.multi ? this.props.clearAllText : this.props.clearValueText}
@@ -960,6 +963,7 @@ const Select = React.createClass({
 				labelKey: this.props.labelKey,
 				onFocus: this.focusOption,
 				onSelect: this.selectValue,
+				onSelectDisabled: this.props.onSelectDisabled,
 				optionClassName: this.props.optionClassName,
 				optionComponent: this.props.optionComponent,
 				optionRenderer: this.props.optionRenderer || this.getOptionLabel,
@@ -1039,9 +1043,26 @@ const Select = React.createClass({
 		);
 	},
 
+	_getClassNameModifiers(c) {
+		const { multi, disabled, isLoading, searchable } = this.props;
+		const { isFocused, isPseudoFocused, isOpen  } = this.state;
+		return {
+			[c]: true,
+			[`${c}--multi]`]: this.props.multi,
+			[`${c}--single`]: !multi,
+			[`${c}--disabled`]: disabled,
+			[`${c}--focused`]: isFocused,
+			[`${c}--loading`]: isLoading,
+			[`${c}--open`]: isOpen,
+			[`${c}--pseudo-focused`]: isPseudoFocused,
+			[`${c}--searchable`]: searchable,
+			[`${c}--has-value`]: Array.isArray(this.props.currentValue) ? this.props.currentValue.length > 0 : Boolean(this.props.currentValue),
+		}
+	},
+
 	render () {
-		let valueArray = this.getValueArray(this.props.value);
-		let options =	this._visibleOptions = this.filterOptions(this.props.multi ? this.getValueArray(this.props.value) : null);
+		let valueArray = this.getValueArray(this.props.currentValue);
+		let options =	this._visibleOptions = this.filterOptions(this.props.multi ? this.getValueArray(this.props.currentValue) : null);
 		let isOpen = this.state.isOpen;
 		if (this.props.multi && !options.length && valueArray.length && !this.state.inputValue) isOpen = false;
 		const focusedOptionIndex = this.getFocusableOptionIndex(valueArray[0]);
@@ -1050,9 +1071,10 @@ const Select = React.createClass({
 		if (focusedOptionIndex !== null) {
 			focusedOption = this._focusedOption = options[focusedOptionIndex];
 		} else {
-			focusedOption = this._focusedOption = null;
+			focusedOption = this._focusedOption = undefined;
 		}
 		let className = classNames('Select', this.props.className, {
+			[`Select--theme-${this.props.theme}`]: this.props.theme,
 			'Select--multi': this.props.multi,
 			'Select--single': !this.props.multi,
 			'is-disabled': this.props.disabled,

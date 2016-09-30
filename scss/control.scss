@@ -32,6 +32,18 @@
 // base
 
 .Select-control {
+	display: table;
+	width: 100%;
+	position: relative;
+	outline: none;
+	overflow: hidden;
+
+	.Select-input:focus {
+		outline: none;
+	}
+}
+
+.Select--theme-default .Select-control {
 	background-color: $select-input-bg;
 	border-color: lighten($select-input-border-color, 5%) $select-input-border-color darken($select-input-border-color, 10%);
 	border-radius: $select-input-border-radius;
@@ -42,17 +54,9 @@
 	border-spacing: 0;
 	border-collapse: separate;
 	height: $select-input-height;
-	outline: none;
-	overflow: hidden;
-	position: relative;
-	width: 100%;
 
 	&:hover {
 		box-shadow: 0 1px 0 rgba(0, 0, 0, 0.06);
-	}
-
-	.Select-input:focus {
-		outline: none;
 	}
 }
 
@@ -109,6 +113,7 @@
 .has-value.is-pseudo-focused.Select--single > .Select-control .Select-value {
 	.Select-value-label {
 		color: $select-text-color;
+		font-size: $select-text-font-size;
 	}
 	a.Select-value-label {
 		cursor: pointer;
@@ -140,13 +145,15 @@
 		cursor: default;
 		display: inline-block;
 		font-family: inherit;
-		font-size: inherit;
+		font-size: $control-input-font-size;
+		color: $control-input-color;
 		// height: $select-input-internal-height;
 		margin: 0;
 		outline: none;
 		// padding: 0;
 		line-height: 14px;  /* For IE 8 compatibility */
 		padding: (($select-input-internal-height - 14) / 2 - 2) 0 (($select-input-internal-height - 14) / 2 + 2);  /* For IE 8 compatibility */
+		padding-bottom: 0; /* fixes scrollTop bug */
 		-webkit-appearance: none;
 
 		.is-focused & {

@@ -11,14 +11,18 @@ const Option = React.createClass({
 		isSelected: React.PropTypes.bool,              // the option is selected
 		onFocus: React.PropTypes.func,                 // method to handle mouseEnter on option element
 		onSelect: React.PropTypes.func,                // method to handle click on option element
+		onSelectDisabled:  React.PropTypes.func,       // method to handle click on disabled option element
 		onUnfocus: React.PropTypes.func,               // method to handle mouseLeave on option element
 		option: React.PropTypes.object.isRequired,     // object that is base for that option
 		optionIndex: React.PropTypes.number,           // index of the option, used to generate unique ids for aria
 	},
-	blockEvent (event) {
+	handleSelectDisabled (event) {
 		event.preventDefault();
 		event.stopPropagation();
 		if ((event.target.tagName !== 'A') || !('href' in event.target)) {
+			if (this.props.onSelectDisabled) {
+				this.props.onSelectDisabled(this.props.option);
+			}
 			return;
 		}
 		if (event.target.target) {
@@ -71,8 +75,8 @@ const Option = React.createClass({
 
 		return option.disabled ? (
 			<div className={className}
-				onMouseDown={this.blockEvent}
-				onClick={this.blockEvent}>
+				onMouseDown={this.handleSelectDisabled}
+				onClick={this.handleSelectDisabled}>
 				{this.props.children}
 			</div>
 		) : (
