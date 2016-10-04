@@ -57,7 +57,7 @@ function menuRenderer ({
 
 		if (newGroupStart) {
 			return (
-				<div>
+				<div key={`group-${i}-${option[valueKey]}`}>
 					<b className="Select-option-group-label">{option.groupTitle}</b>
 					{body}
 				</div>
