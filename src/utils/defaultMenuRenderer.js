@@ -14,6 +14,7 @@ function menuRenderer ({
 	options,
 	valueArray,
 	valueKey,
+	showGroups,
 	onOptionRef
 }) {
 	let Option = optionComponent;
@@ -55,7 +56,7 @@ function menuRenderer ({
 			</Option>
 		);
 
-		if (newGroupStart) {
+		if (showGroups && newGroupStart) {
 			return (
 				<div key={`group-${i}-${option[valueKey]}`}>
 					<b className="Select-option-group-label">{option.groupTitle}</b>

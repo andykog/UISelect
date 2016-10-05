@@ -972,6 +972,7 @@ const Select = React.createClass({
 				valueArray,
 				valueKey: this.props.valueKey,
 				onOptionRef: this.onOptionRef,
+				showGroups: !this.state.inputValue,
 			});
 		} else if (this.props.noResultsText) {
 			return (
