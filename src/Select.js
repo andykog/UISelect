@@ -114,6 +114,7 @@ const Select = React.createClass({
 		valueRenderer: React.PropTypes.func,        // valueRenderer: function (option) {}
 		wrapperStyle: React.PropTypes.object,       // optional style to apply to the component wrapper
 		theme: React.PropTypes.string,              // theme
+		onClick: React.PropTypes.bool,              // click on the whole container
 	},
 
 	statics: { Async, AsyncCreatable, Creatable },
@@ -1103,6 +1104,7 @@ const Select = React.createClass({
 
 		return (
 			<div ref={ref => this.wrapper = ref}
+				 onClick={this.props.onClick}
 				 className={className}
 				 style={this.props.wrapperStyle}>
 				{this.renderHiddenField(valueArray)}
