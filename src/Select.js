@@ -114,7 +114,7 @@ const Select = React.createClass({
 		valueRenderer: React.PropTypes.func,        // valueRenderer: function (option) {}
 		wrapperStyle: React.PropTypes.object,       // optional style to apply to the component wrapper
 		theme: React.PropTypes.string,              // theme
-		onClick: React.PropTypes.bool,              // click on the whole container
+		onClick: React.PropTypes.func,              // click on the whole container
 	},
 
 	statics: { Async, AsyncCreatable, Creatable },
